@@ -26,6 +26,6 @@ class MAT_Admin_Menu {
     }
 
     public function display_plugin_setup_page() {
-        // Include template
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'templates/admin/main-settings.php';
     }
 }

@@ -48,6 +48,10 @@ class MAT_Plugin_Core {
 			// Add actions/filters for admin
 			add_action( 'admin_menu', array( $plugin_admin, 'add_plugin_admin_menu' ) );
 		}
+
+		if ( class_exists( 'MAT_Admin_Settings' ) ) {
+			new MAT_Admin_Settings();
+		}
 	}
 
 	private function define_public_hooks() {
