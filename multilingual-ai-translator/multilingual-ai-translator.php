@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin constants
-define( 'MAT_VERSION', '2.05' );
+define( 'MAT_VERSION', '2.06' );
 define( 'MAT_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'MAT_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'MAT_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
@@ -43,8 +43,8 @@ function activate_multilingual_ai_translator() {
 	require_once MAT_PLUGIN_DIR . 'includes/class-database-handler.php';
 	MAT_Database_Handler::activate();
 
-	// Insert default EU languages on first activation
-	MAT_Database_Handler::seed_eu_languages();
+	// Check table structure and seed default language based on site locale
+	MAT_Database_Handler::check_tables_exist();
 
 	flush_rewrite_rules();
 }

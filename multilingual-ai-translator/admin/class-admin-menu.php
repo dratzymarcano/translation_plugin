@@ -25,6 +25,7 @@ class MAT_Admin_Menu {
 		add_action( 'wp_ajax_mat_delete_language', array( $this, 'ajax_delete_language' ) );
 		add_action( 'wp_ajax_mat_add_language', array( $this, 'ajax_add_language' ) );
 		add_action( 'wp_ajax_mat_reorder_languages', array( $this, 'ajax_reorder_languages' ) );
+		add_action( 'wp_ajax_mat_repair_database', array( $this, 'ajax_repair_database' ) );
 	}
 
 	/**
@@ -292,5 +293,35 @@ class MAT_Admin_Menu {
 		}
 
 		wp_send_json_success();
+	}
+
+	/**
+	 * AJAX: Repair database tables
+	 */
+	public function ajax_repair_database() {
+		check_ajax_referer( 'mat_admin_nonce', 'nonce' );
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( 'Unauthorized' );
+		}
+
+		global $wpdb;
+		
+		// Drop and recreate the languages table
+		$table = $wpdb->prefix . 'mat_languages';
+		$wpdb->query( "DROP TABLE IF EXISTS $table" );
+		
+		// Recreate all tables
+		MAT_Database_Handler::create_tables();
+		
+		// Seed default language based on site locale
+		MAT_Database_Handler::seed_default_language();
+		
+		// Get the new default language
+		$default = MAT_Database_Handler::get_default_language();
+		
+		wp_send_json_success( array(
+			'message' => __( 'Database repaired successfully!', 'multilingual-ai-translator' ),
+			'default_language' => $default ? $default['name'] : 'Unknown',
+		) );
 	}
 }

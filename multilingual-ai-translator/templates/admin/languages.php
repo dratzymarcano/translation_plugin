@@ -226,6 +226,17 @@ foreach ( $languages as $lang ) {
 				<li><strong><?php esc_html_e( 'SEO URLs:', 'multilingual-ai-translator' ); ?></strong> <?php esc_html_e( 'Each language gets clean URLs like /de/page-name/, /fr/page-name/', 'multilingual-ai-translator' ); ?></li>
 			</ul>
 		</div>
+
+		<!-- Troubleshooting Card -->
+		<div class="mat-card mat-card-warning">
+			<h3><span class="dashicons dashicons-admin-tools"></span> <?php esc_html_e( 'Troubleshooting', 'multilingual-ai-translator' ); ?></h3>
+			<p><?php esc_html_e( 'If you are having issues adding languages or the list is not showing correctly, try repairing the database tables.', 'multilingual-ai-translator' ); ?></p>
+			<button type="button" class="mat-btn mat-btn-warning" id="mat-repair-db-btn">
+				<span class="dashicons dashicons-database-view"></span>
+				<?php esc_html_e( 'Repair Database', 'multilingual-ai-translator' ); ?>
+			</button>
+			<p class="mat-repair-note"><small><?php esc_html_e( 'This will reset the languages table and set your site language as default.', 'multilingual-ai-translator' ); ?></small></p>
+		</div>
 	</div>
 </div>
 
@@ -239,6 +250,13 @@ foreach ( $languages as $lang ) {
 .mat-card-info h3 { margin: 0 0 12px; font-size: 14px; display: flex; align-items: center; gap: 6px; }
 .mat-card-info ul { margin: 0; padding-left: 20px; }
 .mat-card-info li { margin-bottom: 8px; font-size: 13px; color: #555; }
+
+.mat-card-warning { background: #fff8e6; border: 1px solid #ffeeba; }
+.mat-card-warning h3 { margin: 0 0 12px; font-size: 14px; display: flex; align-items: center; gap: 6px; color: #856404; }
+.mat-card-warning p { margin: 0 0 12px; font-size: 13px; color: #856404; }
+.mat-btn-warning { background: #ffc107; color: #212529; border: 1px solid #ffc107; }
+.mat-btn-warning:hover { background: #e0a800; border-color: #e0a800; }
+.mat-repair-note { margin-top: 8px !important; color: #999 !important; }
 
 .mat-form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 20px; }
 .mat-form-full { grid-column: 1 / -1; }
@@ -459,5 +477,32 @@ jQuery(document).ready(function($) {
 			}
 		});
 	}
+
+	// Repair Database
+	$('#mat-repair-db-btn').on('click', function() {
+		if (!confirm('<?php echo esc_js( __( 'This will reset all languages and set your site language as default. Continue?', 'multilingual-ai-translator' ) ); ?>')) {
+			return;
+		}
+		
+		var $btn = $(this);
+		var originalText = $btn.html();
+		$btn.prop('disabled', true).html('<span class="dashicons dashicons-update mat-spin"></span> <?php echo esc_js( __( 'Repairing...', 'multilingual-ai-translator' ) ); ?>');
+		
+		$.post(matAdmin.ajaxUrl, {
+			action: 'mat_repair_database',
+			nonce: matAdmin.nonce
+		}, function(response) {
+			if (response.success) {
+				alert(response.data.message + ' Default: ' + response.data.default_language);
+				location.reload();
+			} else {
+				alert('Error: ' + (response.data || 'Unknown error'));
+				$btn.prop('disabled', false).html(originalText);
+			}
+		}).fail(function() {
+			alert('Request failed. Please try again.');
+			$btn.prop('disabled', false).html(originalText);
+		});
+	});
 });
 </script>

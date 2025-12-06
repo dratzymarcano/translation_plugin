@@ -163,15 +163,113 @@ class MAT_Database_Handler {
     }
 
     /**
-     * Check and recreate tables if needed.
+     * Check and recreate tables if needed, verify structure.
      */
     public static function check_tables_exist() {
         global $wpdb;
         $table_name = $wpdb->prefix . 'mat_languages';
-        if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) !== $table_name ) {
+        
+        // Check if table exists
+        $table_exists = $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) === $table_name;
+        
+        if ( ! $table_exists ) {
             self::create_tables();
-            self::seed_eu_languages();
+            self::seed_default_language();
+            return;
         }
+        
+        // Verify table has correct columns
+        $columns = $wpdb->get_results( "SHOW COLUMNS FROM $table_name" );
+        $column_names = array_map( function( $col ) { return $col->Field; }, $columns );
+        
+        $required_columns = array( 'id', 'code', 'name', 'native_name', 'flag', 'is_default', 'is_active', 'sort_order' );
+        $missing_columns = array_diff( $required_columns, $column_names );
+        
+        if ( ! empty( $missing_columns ) ) {
+            // Table structure is wrong, recreate it
+            $wpdb->query( "DROP TABLE IF EXISTS $table_name" );
+            self::create_tables();
+            self::seed_default_language();
+            return;
+        }
+        
+        // Check if there are any languages, if not seed default
+        $count = $wpdb->get_var( "SELECT COUNT(*) FROM $table_name" );
+        if ( $count == 0 ) {
+            self::seed_default_language();
+        }
+    }
+
+    /**
+     * Seed default language based on WordPress site language.
+     */
+    public static function seed_default_language() {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'mat_languages';
+        
+        // Get WordPress locale
+        $locale = get_locale();
+        $lang_code = substr( $locale, 0, 2 ); // e.g., 'en' from 'en_US', 'de' from 'de_DE'
+        
+        // Language data mapping
+        $language_data = array(
+            'en' => array( 'English', 'English', 'gb' ),
+            'de' => array( 'German', 'Deutsch', 'de' ),
+            'fr' => array( 'French', 'Français', 'fr' ),
+            'es' => array( 'Spanish', 'Español', 'es' ),
+            'it' => array( 'Italian', 'Italiano', 'it' ),
+            'pt' => array( 'Portuguese', 'Português', 'pt' ),
+            'nl' => array( 'Dutch', 'Nederlands', 'nl' ),
+            'pl' => array( 'Polish', 'Polski', 'pl' ),
+            'ro' => array( 'Romanian', 'Română', 'ro' ),
+            'el' => array( 'Greek', 'Ελληνικά', 'gr' ),
+            'sv' => array( 'Swedish', 'Svenska', 'se' ),
+            'hu' => array( 'Hungarian', 'Magyar', 'hu' ),
+            'cs' => array( 'Czech', 'Čeština', 'cz' ),
+            'da' => array( 'Danish', 'Dansk', 'dk' ),
+            'fi' => array( 'Finnish', 'Suomi', 'fi' ),
+            'sk' => array( 'Slovak', 'Slovenčina', 'sk' ),
+            'bg' => array( 'Bulgarian', 'Български', 'bg' ),
+            'hr' => array( 'Croatian', 'Hrvatski', 'hr' ),
+            'lt' => array( 'Lithuanian', 'Lietuvių', 'lt' ),
+            'lv' => array( 'Latvian', 'Latviešu', 'lv' ),
+            'sl' => array( 'Slovenian', 'Slovenščina', 'si' ),
+            'et' => array( 'Estonian', 'Eesti', 'ee' ),
+            'mt' => array( 'Maltese', 'Malti', 'mt' ),
+            'ga' => array( 'Irish', 'Gaeilge', 'ie' ),
+            'ru' => array( 'Russian', 'Русский', 'ru' ),
+            'uk' => array( 'Ukrainian', 'Українська', 'ua' ),
+            'ja' => array( 'Japanese', '日本語', 'jp' ),
+            'ko' => array( 'Korean', '한국어', 'kr' ),
+            'zh' => array( 'Chinese', '中文', 'cn' ),
+            'ar' => array( 'Arabic', 'العربية', 'sa' ),
+            'tr' => array( 'Turkish', 'Türkçe', 'tr' ),
+            'vi' => array( 'Vietnamese', 'Tiếng Việt', 'vn' ),
+            'th' => array( 'Thai', 'ไทย', 'th' ),
+            'hi' => array( 'Hindi', 'हिन्दी', 'in' ),
+        );
+        
+        // Get language info or default to English
+        if ( isset( $language_data[ $lang_code ] ) ) {
+            $lang_info = $language_data[ $lang_code ];
+        } else {
+            $lang_code = 'en';
+            $lang_info = $language_data['en'];
+        }
+        
+        // Insert default language
+        $wpdb->insert(
+            $table_name,
+            array(
+                'code'        => $lang_code,
+                'name'        => $lang_info[0],
+                'native_name' => $lang_info[1],
+                'flag'        => $lang_info[2],
+                'is_default'  => 1,
+                'is_active'   => 1,
+                'sort_order'  => 1,
+            )
+        );
     }
 
     // =========================================================================
