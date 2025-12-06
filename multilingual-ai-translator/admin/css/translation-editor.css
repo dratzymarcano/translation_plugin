@@ -1,0 +1,367 @@
+/**
+ * Translation Editor Styles
+ * Polylang-style translation interface
+ */
+
+.mat-translation-editor {
+    margin: -6px -12px -12px;
+}
+
+/* Toolbar */
+.mat-editor-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-bottom: 1px solid #ddd;
+}
+
+.mat-translate-all-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #fff !important;
+    border-color: #fff !important;
+    color: #764ba2 !important;
+    font-weight: 500;
+}
+
+.mat-translate-all-btn:hover {
+    background: #f0f0f0 !important;
+}
+
+.mat-translate-all-btn .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.mat-toolbar-info {
+    font-size: 12px;
+    color: #fff;
+}
+
+.mat-toolbar-info .mat-warning {
+    color: #ffd54f;
+}
+
+.mat-toolbar-info .mat-success {
+    color: #a5d6a7;
+}
+
+/* Tabs Navigation */
+.mat-tabs-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    padding: 12px 12px 0;
+    background: #f9f9f9;
+    border-bottom: 1px solid #ddd;
+}
+
+.mat-tab-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    background: #fff;
+    cursor: pointer;
+    font-size: 13px;
+    color: #555;
+    transition: all 0.2s;
+    position: relative;
+    top: 1px;
+}
+
+.mat-tab-btn:hover {
+    background: #f5f5f5;
+    color: #333;
+}
+
+.mat-tab-btn.mat-active {
+    background: #fff;
+    color: #667eea;
+    border-color: #ddd;
+    border-bottom: 1px solid #fff;
+    font-weight: 500;
+}
+
+.mat-tab-btn .mat-flag {
+    font-size: 18px;
+}
+
+.mat-tab-btn .mat-tab-name {
+    display: inline;
+}
+
+.mat-badge {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.mat-badge-default {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.mat-badge-translated {
+    background: #e8f5e9;
+    color: #388e3c;
+}
+
+.mat-badge-pending {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+/* Tab Content */
+.mat-tabs-content {
+    background: #fff;
+}
+
+.mat-tab-pane {
+    display: none;
+    padding: 20px;
+}
+
+.mat-tab-pane.mat-active {
+    display: block;
+}
+
+/* Default Language Notice */
+.mat-default-notice {
+    background: #e3f2fd;
+    border: 1px solid #90caf9;
+    border-radius: 4px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    color: #1565c0;
+}
+
+.mat-default-notice p {
+    margin: 0;
+}
+
+/* Translate Bar */
+.mat-translate-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 12px;
+    background: #f8f9ff;
+    border: 1px dashed #667eea;
+    border-radius: 4px;
+}
+
+.mat-translate-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.mat-translate-btn .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.mat-translate-status {
+    font-size: 13px;
+    color: #666;
+}
+
+.mat-translate-status.mat-translating {
+    color: #f57c00;
+}
+
+.mat-translate-status.mat-success {
+    color: #388e3c;
+}
+
+.mat-translate-status.mat-error {
+    color: #d32f2f;
+}
+
+/* Fields */
+.mat-field {
+    margin-bottom: 16px;
+}
+
+.mat-field label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #333;
+    font-size: 13px;
+}
+
+.mat-optional {
+    font-weight: normal;
+    color: #999;
+    font-size: 11px;
+}
+
+.mat-char-count {
+    font-weight: normal;
+    font-size: 11px;
+    color: #999;
+}
+
+.mat-char-count .mat-current {
+    font-weight: 500;
+}
+
+.mat-char-count.mat-warning .mat-current {
+    color: #f57c00;
+}
+
+.mat-char-count.mat-error .mat-current {
+    color: #d32f2f;
+}
+
+.mat-input,
+.mat-textarea,
+.mat-textarea-small {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.mat-input:focus,
+.mat-textarea:focus,
+.mat-textarea-small:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.mat-input:disabled,
+.mat-textarea:disabled,
+.mat-textarea-small:disabled {
+    background: #f5f5f5;
+    color: #666;
+    cursor: not-allowed;
+}
+
+.mat-textarea {
+    min-height: 200px;
+    resize: vertical;
+    font-family: inherit;
+    line-height: 1.6;
+}
+
+.mat-textarea-small {
+    min-height: 60px;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.mat-hint {
+    margin: 6px 0 0;
+    font-size: 12px;
+    color: #666;
+}
+
+.mat-hint code {
+    background: #f5f5f5;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+}
+
+/* SEO Section */
+.mat-seo-section {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.mat-seo-section h4 {
+    margin: 0 0 16px;
+    font-size: 14px;
+    color: #667eea;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mat-seo-section h4::before {
+    content: "🔍";
+}
+
+/* Translation Meta */
+.mat-translation-meta {
+    margin-top: 20px;
+    padding-top: 12px;
+    border-top: 1px solid #eee;
+    color: #999;
+}
+
+/* Loading States */
+.mat-loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.mat-loading::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Animation */
+@keyframes mat-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.mat-spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid #ddd;
+    border-top-color: #667eea;
+    border-radius: 50%;
+    animation: mat-spin 0.8s linear infinite;
+}
+
+/* Responsive */
+@media (max-width: 782px) {
+    .mat-editor-toolbar {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+    
+    .mat-tab-btn .mat-tab-name {
+        display: none;
+    }
+    
+    .mat-tab-btn {
+        padding: 10px 12px;
+    }
+    
+    .mat-translate-bar {
+        flex-direction: column;
+        text-align: center;
+    }
+}
