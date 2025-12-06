@@ -1,83 +1,102 @@
 <?php
+/**
+ * Plugin Core - Main orchestrator class.
+ *
+ * @package MultiLingual_AI_Translator
+ * @since 2.0.0
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+    exit;
 }
 
 class MAT_Plugin_Core {
 
-	protected $loader;
-	protected $plugin_name;
-	protected $version;
+    private $plugin_name;
+    private $version;
 
-	public function __construct() {
-		$this->plugin_name = 'multilingual-ai-translator';
-		$this->version = MAT_VERSION;
+    public function __construct() {
+        $this->plugin_name = 'multilingual-ai-translator';
+        $this->version     = MAT_VERSION;
+    }
 
-		$this->load_dependencies();
-		$this->define_admin_hooks();
-		$this->define_public_hooks();
-	}
+    /**
+     * Run the plugin.
+     */
+    public function run() {
+        $this->load_dependencies();
+        $this->init_admin();
+        $this->init_public();
+    }
 
-	private function load_dependencies() {
-		$base_path = plugin_dir_path( dirname( __FILE__ ) );
-		$files = array(
-			'includes/class-database-handler.php',
-			'includes/class-openrouter-api.php',
-			'includes/class-translation-manager.php',
-			'includes/class-language-switcher.php',
-			'includes/class-seo-handler.php',
-			'includes/class-url-handler.php',
-			'includes/class-admin-settings.php',
-			'admin/class-admin-menu.php',
-			'admin/class-translation-editor.php',
-			'admin/class-seo-metabox.php',
-			'public/class-frontend-handler.php',
-		);
+    /**
+     * Load all dependencies.
+     */
+    private function load_dependencies() {
+        $files = array(
+            'includes/class-database-handler.php',
+            'includes/class-openrouter-api.php',
+            'includes/class-language-switcher.php',
+            'includes/class-seo-metabox.php',
+            'admin/class-admin-menu.php',
+        );
 
-		foreach ( $files as $file ) {
-			if ( file_exists( $base_path . $file ) ) {
-				require_once $base_path . $file;
-			}
-		}
-	}
+        foreach ( $files as $file ) {
+            $path = MAT_PLUGIN_DIR . $file;
+            if ( file_exists( $path ) ) {
+                require_once $path;
+            }
+        }
 
-	private function define_admin_hooks() {
-		if ( class_exists( 'MAT_Admin_Menu' ) ) {
-			$plugin_admin = new MAT_Admin_Menu( $this->get_plugin_name(), $this->get_version() );
-			// Add actions/filters for admin
-			add_action( 'admin_menu', array( $plugin_admin, 'add_plugin_admin_menu' ) );
-		}
+        // Ensure tables exist
+        if ( class_exists( 'MAT_Database_Handler' ) ) {
+            MAT_Database_Handler::check_tables_exist();
+        }
+    }
 
-		if ( class_exists( 'MAT_Admin_Settings' ) ) {
-			new MAT_Admin_Settings();
-		}
+    /**
+     * Initialize admin functionality.
+     */
+    private function init_admin() {
+        if ( ! is_admin() ) {
+            return;
+        }
 
-		add_filter( 'plugin_action_links_' . plugin_basename( dirname( dirname( __FILE__ ) ) . '/multilingual-ai-translator.php' ), array( $this, 'add_action_links' ) );
-	}
+        if ( class_exists( 'MAT_Admin_Menu' ) ) {
+            new MAT_Admin_Menu( $this->plugin_name, $this->version );
+        }
 
-	public function add_action_links( $links ) {
-		$settings_link = '<a href="admin.php?page=multilingual-ai-translator">' . __( 'Settings', 'multilingual-ai-translator' ) . '</a>';
-		array_unshift( $links, $settings_link );
-		return $links;
-	}
+        if ( class_exists( 'MAT_SEO_Metabox' ) ) {
+            new MAT_SEO_Metabox();
+        }
 
-	private function define_public_hooks() {
-		if ( class_exists( 'MAT_Frontend_Handler' ) ) {
-			$plugin_public = new MAT_Frontend_Handler( $this->get_plugin_name(), $this->get_version() );
-			// Add actions/filters for public
-		}
-	}
+        // Add settings link to plugins page
+        add_filter( 'plugin_action_links_' . MAT_PLUGIN_BASENAME, array( $this, 'add_settings_link' ) );
+    }
 
-	public function run() {
-		// Run the loader if we had one, or just let the hooks fire
-	}
+    /**
+     * Initialize public functionality.
+     */
+    private function init_public() {
+        if ( class_exists( 'MAT_Language_Switcher' ) ) {
+            new MAT_Language_Switcher();
+        }
+    }
 
-	public function get_plugin_name() {
-		return $this->plugin_name;
-	}
+    /**
+     * Add settings link.
+     */
+    public function add_settings_link( $links ) {
+        $settings_link = '<a href="admin.php?page=' . $this->plugin_name . '">' . __( 'Settings', 'multilingual-ai-translator' ) . '</a>';
+        array_unshift( $links, $settings_link );
+        return $links;
+    }
 
-	public function get_version() {
-		return $this->version;
-	}
+    public function get_plugin_name() {
+        return $this->plugin_name;
+    }
+
+    public function get_version() {
+        return $this->version;
+    }
 }

@@ -1,0 +1,595 @@
+/**
+ * MultiLingual AI Translator - Frontend Language Switcher
+ * Professional styling for language switcher components
+ *
+ * @package MultiLingual_AI_Translator
+ * @since 2.0.0
+ */
+
+/* ==========================================================================
+   CSS Variables
+   ========================================================================== */
+
+:root {
+    --mat-primary: #4f46e5;
+    --mat-primary-hover: #4338ca;
+    --mat-text: #1f2937;
+    --mat-text-light: #6b7280;
+    --mat-border: #e5e7eb;
+    --mat-bg: #ffffff;
+    --mat-bg-hover: #f9fafb;
+    --mat-bg-active: #eef2ff;
+    --mat-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --mat-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --mat-radius: 8px;
+    --mat-radius-sm: 6px;
+    --mat-transition: 0.2s ease;
+}
+
+/* ==========================================================================
+   Base Switcher Styles
+   ========================================================================== */
+
+.mat-language-switcher {
+    position: relative;
+    display: inline-block;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    z-index: 999;
+}
+
+.mat-language-switcher * {
+    box-sizing: border-box;
+}
+
+/* Flag emoji styling */
+.mat-flag {
+    font-size: 1.2em;
+    line-height: 1;
+    margin-right: 6px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.mat-lang-name {
+    font-weight: 500;
+    color: var(--mat-text);
+}
+
+.mat-lang-code {
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--mat-text-light);
+    font-size: 12px;
+}
+
+/* ==========================================================================
+   Dropdown Style
+   ========================================================================== */
+
+.mat-switcher-dropdown .mat-switcher-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: var(--mat-bg);
+    border: 1px solid var(--mat-border);
+    border-radius: var(--mat-radius);
+    cursor: pointer;
+    transition: all var(--mat-transition);
+    font-size: 14px;
+    color: var(--mat-text);
+    white-space: nowrap;
+}
+
+.mat-switcher-dropdown .mat-switcher-toggle:hover {
+    border-color: var(--mat-primary);
+    box-shadow: var(--mat-shadow);
+}
+
+.mat-switcher-dropdown .mat-switcher-toggle:focus {
+    outline: none;
+    border-color: var(--mat-primary);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.mat-dropdown-arrow {
+    transition: transform var(--mat-transition);
+    opacity: 0.6;
+    margin-left: 2px;
+}
+
+.mat-switcher-dropdown.mat-open .mat-dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+/* Dropdown menu */
+.mat-switcher-dropdown ul.mat-switcher-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    min-width: 180px;
+    max-height: 320px;
+    overflow-y: auto;
+    background: var(--mat-bg);
+    border: 1px solid var(--mat-border);
+    border-radius: var(--mat-radius);
+    box-shadow: var(--mat-shadow-lg);
+    list-style: none;
+    margin: 0;
+    padding: 6px 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all var(--mat-transition);
+    z-index: 1000;
+}
+
+.mat-switcher-dropdown.mat-open ul.mat-switcher-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.mat-switcher-dropdown ul.mat-switcher-dropdown li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.mat-switcher-dropdown .mat-lang-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    color: var(--mat-text);
+    text-decoration: none;
+    transition: background var(--mat-transition);
+    cursor: pointer;
+}
+
+.mat-switcher-dropdown .mat-lang-item:hover {
+    background: var(--mat-bg-hover);
+}
+
+.mat-switcher-dropdown .mat-lang-item.mat-active {
+    background: var(--mat-bg-active);
+    color: var(--mat-primary);
+}
+
+.mat-switcher-dropdown .mat-check {
+    margin-left: auto;
+    color: var(--mat-primary);
+}
+
+/* ==========================================================================
+   Inline Style
+   ========================================================================== */
+
+.mat-switcher-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.mat-switcher-inline ul.mat-switcher-inline {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.mat-switcher-inline ul.mat-switcher-inline li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.mat-switcher-inline .mat-separator {
+    color: var(--mat-border);
+    font-size: 12px;
+    user-select: none;
+}
+
+.mat-switcher-inline .mat-lang-item {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    color: var(--mat-text);
+    text-decoration: none;
+    border-radius: var(--mat-radius-sm);
+    transition: all var(--mat-transition);
+}
+
+.mat-switcher-inline .mat-lang-item:hover {
+    background: var(--mat-bg-hover);
+    color: var(--mat-primary);
+}
+
+.mat-switcher-inline .mat-lang-item.mat-active {
+    background: var(--mat-primary);
+    color: white;
+}
+
+.mat-switcher-inline .mat-lang-item.mat-active .mat-lang-name,
+.mat-switcher-inline .mat-lang-item.mat-active .mat-lang-code {
+    color: white;
+}
+
+/* ==========================================================================
+   Flags Only Style
+   ========================================================================== */
+
+.mat-switcher-flags-only {
+    display: inline-flex;
+}
+
+.mat-switcher-flags-only ul.mat-switcher-flags {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.mat-switcher-flags-only ul.mat-switcher-flags li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.mat-switcher-flags-only .mat-flag-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    text-decoration: none;
+    border-radius: 50%;
+    transition: all var(--mat-transition);
+    border: 2px solid transparent;
+}
+
+.mat-switcher-flags-only .mat-flag-item .mat-flag {
+    margin: 0;
+    font-size: 1.4em;
+}
+
+.mat-switcher-flags-only .mat-flag-item:hover {
+    background: var(--mat-bg-hover);
+    transform: scale(1.1);
+}
+
+.mat-switcher-flags-only .mat-flag-item.mat-active {
+    border-color: var(--mat-primary);
+    background: var(--mat-bg-active);
+}
+
+/* ==========================================================================
+   Floating Widget
+   ========================================================================== */
+
+.mat-floating-widget {
+    position: fixed;
+    z-index: 99999;
+}
+
+.mat-floating-widget.mat-float-bottom-right {
+    bottom: 24px;
+    right: 24px;
+}
+
+.mat-floating-widget.mat-float-bottom-left {
+    bottom: 24px;
+    left: 24px;
+}
+
+.mat-floating-widget.mat-float-top-right {
+    top: 24px;
+    right: 24px;
+}
+
+.mat-floating-widget.mat-float-top-left {
+    top: 24px;
+    left: 24px;
+}
+
+/* Floating toggle button */
+.mat-floating-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    background: var(--mat-primary);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    box-shadow: var(--mat-shadow-lg);
+    cursor: pointer;
+    transition: all var(--mat-transition);
+}
+
+.mat-floating-toggle:hover {
+    background: var(--mat-primary-hover);
+    transform: scale(1.05);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.mat-floating-toggle:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.3), var(--mat-shadow-lg);
+}
+
+.mat-floating-toggle .mat-flag {
+    font-size: 1.6em;
+    margin: 0;
+}
+
+.mat-floating-toggle svg {
+    stroke: currentColor;
+}
+
+/* Floating dropdown */
+.mat-floating-dropdown {
+    position: absolute;
+    width: 280px;
+    max-height: 400px;
+    background: var(--mat-bg);
+    border-radius: var(--mat-radius);
+    box-shadow: var(--mat-shadow-lg);
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.95);
+    transition: all var(--mat-transition);
+    overflow: hidden;
+}
+
+.mat-float-bottom-right .mat-floating-dropdown,
+.mat-float-top-right .mat-floating-dropdown {
+    right: 0;
+}
+
+.mat-float-bottom-left .mat-floating-dropdown,
+.mat-float-top-left .mat-floating-dropdown {
+    left: 0;
+}
+
+.mat-float-bottom-right .mat-floating-dropdown,
+.mat-float-bottom-left .mat-floating-dropdown {
+    bottom: calc(100% + 12px);
+}
+
+.mat-float-top-right .mat-floating-dropdown,
+.mat-float-top-left .mat-floating-dropdown {
+    top: calc(100% + 12px);
+}
+
+.mat-floating-widget.mat-open .mat-floating-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+}
+
+/* Floating header */
+.mat-floating-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, var(--mat-primary) 0%, #6366f1 100%);
+    color: white;
+    font-weight: 600;
+}
+
+.mat-floating-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background var(--mat-transition);
+    color: white;
+}
+
+.mat-floating-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Floating list */
+.mat-floating-list {
+    list-style: none;
+    margin: 0;
+    padding: 8px 0;
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.mat-floating-list li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.mat-floating-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    color: var(--mat-text);
+    text-decoration: none;
+    transition: background var(--mat-transition);
+    cursor: pointer;
+}
+
+.mat-floating-item:hover {
+    background: var(--mat-bg-hover);
+}
+
+.mat-floating-item.mat-active {
+    background: var(--mat-bg-active);
+}
+
+.mat-floating-item .mat-flag {
+    font-size: 1.4em;
+    margin-right: 12px;
+}
+
+.mat-lang-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.mat-lang-native {
+    font-weight: 500;
+    color: var(--mat-text);
+}
+
+.mat-lang-english {
+    font-size: 12px;
+    color: var(--mat-text-light);
+}
+
+.mat-floating-item .mat-check {
+    margin-left: auto;
+    color: var(--mat-primary);
+}
+
+/* ==========================================================================
+   Menu Item Integration
+   ========================================================================== */
+
+.mat-menu-item {
+    position: relative;
+}
+
+.mat-menu-item .mat-language-switcher {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+/* Adapt to common menu styles */
+.mat-menu-switcher.mat-switcher-dropdown .mat-switcher-toggle {
+    background: transparent;
+    border: none;
+    padding: 8px 12px;
+}
+
+.mat-menu-switcher.mat-switcher-dropdown .mat-switcher-toggle:hover {
+    box-shadow: none;
+}
+
+/* Ensure dropdown appears correctly within menus */
+.mat-menu-item .mat-switcher-dropdown ul.mat-switcher-dropdown {
+    right: 0;
+    left: auto;
+}
+
+/* ==========================================================================
+   Responsive Styles
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .mat-floating-widget {
+        bottom: 16px !important;
+        right: 16px !important;
+        left: auto !important;
+        top: auto !important;
+    }
+    
+    .mat-floating-widget.mat-float-bottom-left {
+        left: 16px !important;
+        right: auto !important;
+    }
+    
+    .mat-floating-toggle {
+        width: 48px;
+        height: 48px;
+    }
+    
+    .mat-floating-dropdown {
+        width: calc(100vw - 32px);
+        max-width: 320px;
+    }
+    
+    .mat-float-bottom-right .mat-floating-dropdown {
+        right: 0;
+    }
+    
+    .mat-float-bottom-left .mat-floating-dropdown {
+        left: 0;
+    }
+    
+    /* Inline switcher wrapping */
+    .mat-switcher-inline ul.mat-switcher-inline {
+        flex-wrap: wrap;
+    }
+}
+
+/* ==========================================================================
+   Accessibility
+   ========================================================================== */
+
+.mat-language-switcher:focus-within {
+    outline: none;
+}
+
+.mat-lang-item:focus,
+.mat-flag-item:focus,
+.mat-floating-item:focus {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--mat-primary);
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .mat-switcher-dropdown .mat-switcher-toggle {
+        border-width: 2px;
+    }
+    
+    .mat-switcher-dropdown .mat-lang-item.mat-active,
+    .mat-switcher-inline .mat-lang-item.mat-active,
+    .mat-switcher-flags-only .mat-flag-item.mat-active {
+        outline: 2px solid currentColor;
+    }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .mat-language-switcher *,
+    .mat-floating-widget * {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --mat-text: #f9fafb;
+        --mat-text-light: #9ca3af;
+        --mat-border: #374151;
+        --mat-bg: #1f2937;
+        --mat-bg-hover: #374151;
+        --mat-bg-active: #312e81;
+    }
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+
+@media print {
+    .mat-language-switcher,
+    .mat-floating-widget {
+        display: none !important;
+    }
+}
