@@ -239,31 +239,39 @@ class MAT_Admin_Menu {
 		$code        = sanitize_text_field( $_POST['code'] );
 		$name        = sanitize_text_field( $_POST['name'] );
 		$native_name = sanitize_text_field( $_POST['native_name'] );
-		$flag_code   = sanitize_text_field( $_POST['flag_code'] );
+		$flag        = sanitize_text_field( $_POST['flag'] );
 
 		if ( empty( $code ) || empty( $name ) ) {
 			wp_send_json_error( 'Code and Name are required' );
 		}
 
 		// Check if already exists
-		$exists = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM $table WHERE language_code = %s", $code ) );
+		$exists = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM $table WHERE code = %s", $code ) );
 		if ( $exists ) {
-			wp_send_json_error( 'Language code already exists' );
+			wp_send_json_error( 'Language already exists. Enable it from the list below.' );
 		}
 
-		$max_order = $wpdb->get_var( "SELECT MAX(display_order) FROM $table" );
+		$max_order = $wpdb->get_var( "SELECT MAX(sort_order) FROM $table" );
 
 		$wpdb->insert( $table, array(
-			'language_code' => $code,
-			'language_name' => $name,
-			'native_name'   => $native_name,
-			'flag_code'     => $flag_code,
-			'is_active'     => 1,
-			'is_default'    => 0,
-			'display_order' => $max_order + 1,
+			'code'        => $code,
+			'name'        => $name,
+			'native_name' => $native_name,
+			'flag'        => $flag,
+			'is_active'   => 1,
+			'is_default'  => 0,
+			'sort_order'  => intval( $max_order ) + 1,
 		) );
 
-		wp_send_json_success( array( 'id' => $wpdb->insert_id ) );
+		if ( $wpdb->insert_id ) {
+			wp_send_json_success( array( 
+				'id'   => $wpdb->insert_id,
+				'code' => $code,
+				'name' => $name,
+			) );
+		} else {
+			wp_send_json_error( 'Failed to add language: ' . $wpdb->last_error );
+		}
 	}
 
 	public function ajax_reorder_languages() {
@@ -277,7 +285,7 @@ class MAT_Admin_Menu {
 		$order = $_POST['order'];
 
 		foreach ( $order as $position => $id ) {
-			$wpdb->update( $table, array( 'display_order' => $position + 1 ), array( 'id' => intval( $id ) ) );
+			$wpdb->update( $table, array( 'sort_order' => $position + 1 ), array( 'id' => intval( $id ) ) );
 		}
 
 		wp_send_json_success();
