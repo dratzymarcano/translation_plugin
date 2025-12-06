@@ -3,7 +3,7 @@
  * Plugin Name: MultiLingual AI Translator Pro
  * Plugin URI:  https://example.com/multilingual-ai-translator-pro
  * Description: AI-powered translations via OpenRouter API with SEO optimization.
- * Version:     1.0.0
+ * Version:     1.0.1
  * Author:      Your Name
  * Author URI:  https://example.com
  * Text Domain: multilingual-ai-translator
@@ -22,7 +22,7 @@ if ( ! defined( 'WPINC' ) ) {
 /**
  * Current plugin version.
  */
-define( 'MAT_VERSION', '1.0.0' );
+define( 'MAT_VERSION', '1.0.1' );
 
 /**
  * The code that runs during plugin activation.
