@@ -60,8 +60,15 @@ class MAT_OpenRouter_API {
      */
     public function __construct() {
         $settings = get_option( 'mat_api_settings', array() );
+        // Check both possible API key locations for backwards compatibility
         $this->api_key = isset( $settings['api_key'] ) ? $settings['api_key'] : '';
-        $this->default_model = isset( $settings['model'] ) ? $settings['model'] : 'anthropic/claude-3.5-sonnet';
+        if ( empty( $this->api_key ) ) {
+            $this->api_key = get_option( 'mat_openrouter_api_key', '' );
+        }
+        $this->default_model = isset( $settings['model'] ) ? $settings['model'] : '';
+        if ( empty( $this->default_model ) ) {
+            $this->default_model = get_option( 'mat_ai_model', 'anthropic/claude-3.5-sonnet' );
+        }
     }
 
     /**

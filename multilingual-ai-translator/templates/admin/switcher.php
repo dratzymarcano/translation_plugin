@@ -7,6 +7,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// Handle form submission FIRST (before loading settings)
+$settings_saved = false;
+if ( isset( $_POST['mat_save_switcher'] ) && isset( $_POST['mat_switcher_nonce'] ) && wp_verify_nonce( $_POST['mat_switcher_nonce'], 'mat_switcher_settings' ) ) {
+	$new_settings = array(
+		'position'    => sanitize_text_field( $_POST['switcher_position'] ),
+		'style'       => sanitize_text_field( $_POST['switcher_style'] ),
+		'show_flags'  => isset( $_POST['switcher_show_flags'] ) ? 1 : 0,
+		'show_names'  => isset( $_POST['switcher_show_names'] ) ? 1 : 0,
+	);
+	
+	update_option( 'mat_switcher_settings', $new_settings );
+	$settings_saved = true;
+}
+
 // Get settings with proper option names
 $settings = get_option( 'mat_switcher_settings', array() );
 $switcher_type       = isset( $settings['style'] ) ? $settings['style'] : 'dropdown';
@@ -27,6 +41,12 @@ $active_languages = MAT_Database_Handler::get_active_languages();
 			<p class="mat-subtitle"><?php esc_html_e( 'Configure how visitors switch between languages', 'multilingual-ai-translator' ); ?></p>
 		</div>
 	</div>
+
+	<?php if ( $settings_saved ) : ?>
+		<div class="notice notice-success is-dismissible">
+			<p><?php esc_html_e( 'Settings saved successfully!', 'multilingual-ai-translator' ); ?></p>
+		</div>
+	<?php endif; ?>
 
 	<div class="mat-switcher-page">
 		<form method="post" action="">
@@ -257,19 +277,3 @@ $active_languages = MAT_Database_Handler::get_active_languages();
 	.mat-two-columns { grid-template-columns: 1fr; }
 }
 </style>
-
-<?php
-// Handle form submission
-if ( isset( $_POST['mat_save_switcher'] ) && wp_verify_nonce( $_POST['mat_switcher_nonce'], 'mat_switcher_settings' ) ) {
-	$new_settings = array(
-		'position'    => sanitize_text_field( $_POST['switcher_position'] ),
-		'style'       => sanitize_text_field( $_POST['switcher_style'] ),
-		'show_flags'  => isset( $_POST['switcher_show_flags'] ) ? 1 : 0,
-		'show_names'  => isset( $_POST['switcher_show_names'] ) ? 1 : 0,
-	);
-	
-	update_option( 'mat_switcher_settings', $new_settings );
-	
-	echo '<script>location.reload();</script>';
-}
-?>

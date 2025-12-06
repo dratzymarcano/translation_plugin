@@ -138,9 +138,12 @@ class MAT_Admin_Menu {
 	 */
 	public function render_dashboard() {
 		$languages       = MAT_Database_Handler::get_all_languages();
-		$active_count    = count( array_filter( $languages, function( $l ) { return $l->is_active; } ) );
+		$active_count    = count( array_filter( $languages, function( $l ) {
+			return isset( $l['is_active'] ) ? $l['is_active'] : ( isset( $l->is_active ) ? $l->is_active : 0 );
+		} ) );
 		$default_lang    = MAT_Database_Handler::get_default_language();
-		$api_key_set     = ! empty( get_option( 'mat_openrouter_api_key' ) );
+		$api_settings    = get_option( 'mat_api_settings', array() );
+		$api_key_set     = ! empty( $api_settings['api_key'] ) || ! empty( get_option( 'mat_openrouter_api_key' ) );
 		$switcher_active = get_option( 'mat_switcher_position', 'none' ) !== 'none';
 
 		include MAT_PLUGIN_DIR . 'templates/admin/dashboard.php';

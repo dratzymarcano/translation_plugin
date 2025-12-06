@@ -121,7 +121,8 @@ class MAT_Translation_Editor {
                 <span class="mat-toolbar-info">
                     <?php 
                     $api_settings = get_option( 'mat_api_settings', array() );
-                    if ( empty( $api_settings['api_key'] ) ) {
+                    $api_key = isset( $api_settings['api_key'] ) ? $api_settings['api_key'] : get_option( 'mat_openrouter_api_key', '' );
+                    if ( empty( $api_key ) ) {
                         echo '<span class="mat-warning">⚠️ ' . esc_html__( 'API key not configured. Go to Settings → API Settings.', 'multilingual-ai-translator' ) . '</span>';
                     } else {
                         echo '<span class="mat-success">✓ ' . esc_html__( 'API configured', 'multilingual-ai-translator' ) . '</span>';
@@ -437,7 +438,7 @@ class MAT_Translation_Editor {
 
         // Get API model
         $api_settings = get_option( 'mat_api_settings', array() );
-        $model = $api_settings['model'] ?? 'anthropic/claude-3.5-sonnet';
+        $model = isset( $api_settings['model'] ) ? $api_settings['model'] : get_option( 'mat_ai_model', 'anthropic/claude-3.5-sonnet' );
 
         // Save translation
         $data = array(
@@ -541,6 +542,7 @@ class MAT_Translation_Editor {
         }
 
         $api_settings = get_option( 'mat_api_settings', array() );
+        $model = isset( $api_settings['model'] ) ? $api_settings['model'] : get_option( 'mat_ai_model', 'anthropic/claude-3.5-sonnet' );
         
         $data = array(
             'title'            => $title_result['translation'],
@@ -549,7 +551,7 @@ class MAT_Translation_Editor {
             'meta_title'       => wp_trim_words( $title_result['translation'], 10, '' ),
             'meta_description' => wp_trim_words( strip_tags( $content_result['translation'] ), 25, '...' ),
             'status'           => 'auto',
-            'ai_model'         => $api_settings['model'] ?? 'anthropic/claude-3.5-sonnet',
+            'ai_model'         => $model,
         );
 
         MAT_Database_Handler::save_post_translation( $item['post_id'], $target_lang, $data );

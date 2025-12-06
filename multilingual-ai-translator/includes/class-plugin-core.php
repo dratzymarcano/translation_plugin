@@ -103,6 +103,9 @@ class MAT_Plugin_Core {
         // URL Handler for SEO-friendly URLs
         if ( class_exists( 'MAT_URL_Handler' ) ) {
             $this->url_handler = new MAT_URL_Handler();
+            // Make URL handler globally accessible for Frontend and Switcher
+            global $mat_url_handler;
+            $mat_url_handler = $this->url_handler;
         }
     }
 
