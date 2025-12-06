@@ -159,17 +159,36 @@ $active_languages = MAT_Database_Handler::get_active_languages();
 							<div class="mat-preview-container">
 								<p class="mat-preview-label"><?php esc_html_e( 'Dropdown Style:', 'multilingual-ai-translator' ); ?></p>
 								<div class="mat-preview-box">
-									<?php echo do_shortcode( '[mat_language_switcher style="dropdown"]' ); ?>
+									<?php 
+									// Safe shortcode render for admin
+									try {
+										echo do_shortcode( '[mat_language_switcher style="dropdown"]' ); 
+									} catch ( Exception $e ) {
+										echo '<p class="mat-preview-error">' . esc_html__( 'Preview unavailable', 'multilingual-ai-translator' ) . '</p>';
+									}
+									?>
 								</div>
 								
 								<p class="mat-preview-label"><?php esc_html_e( 'Inline Style:', 'multilingual-ai-translator' ); ?></p>
 								<div class="mat-preview-box">
-									<?php echo do_shortcode( '[mat_language_switcher style="inline"]' ); ?>
+									<?php 
+									try {
+										echo do_shortcode( '[mat_language_switcher style="inline"]' ); 
+									} catch ( Exception $e ) {
+										echo '<p class="mat-preview-error">' . esc_html__( 'Preview unavailable', 'multilingual-ai-translator' ) . '</p>';
+									}
+									?>
 								</div>
 								
 								<p class="mat-preview-label"><?php esc_html_e( 'Flags Only:', 'multilingual-ai-translator' ); ?></p>
 								<div class="mat-preview-box">
-									<?php echo do_shortcode( '[mat_language_switcher style="flags-only"]' ); ?>
+									<?php 
+									try {
+										echo do_shortcode( '[mat_language_switcher style="flags-only"]' ); 
+									} catch ( Exception $e ) {
+										echo '<p class="mat-preview-error">' . esc_html__( 'Preview unavailable', 'multilingual-ai-translator' ) . '</p>';
+									}
+									?>
 								</div>
 							</div>
 						<?php endif; ?>

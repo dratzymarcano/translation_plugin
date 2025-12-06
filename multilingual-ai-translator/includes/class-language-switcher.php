@@ -165,10 +165,10 @@ class MAT_Language_Switcher {
         <div class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
             <button type="button" class="mat-switcher-toggle" aria-expanded="false">
                 <?php if ( $show_flags && ! empty( $current['flag'] ) ) : ?>
-                    <span class="mat-flag"><?php echo esc_html( $current['flag'] ); ?></span>
+                    <span class="mat-flag"><?php echo $this->render_flag( $current['flag'], $current['name'] ); ?></span>
                 <?php endif; ?>
                 <?php if ( $show_names ) : ?>
-                    <span class="mat-lang-name"><?php echo esc_html( $current['native_name'] ); ?></span>
+                    <span class="mat-lang-name"><?php echo esc_html( $current['native_name'] ?? $current['name'] ); ?></span>
                 <?php endif; ?>
                 <svg class="mat-dropdown-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M6 9l6 6 6-6"/>
@@ -182,10 +182,10 @@ class MAT_Language_Switcher {
                            class="mat-lang-item <?php echo $lang['code'] === $this->current_lang ? 'mat-active' : ''; ?>"
                            data-lang="<?php echo esc_attr( $lang['code'] ); ?>">
                             <?php if ( $show_flags && ! empty( $lang['flag'] ) ) : ?>
-                                <span class="mat-flag"><?php echo esc_html( $lang['flag'] ); ?></span>
+                                <span class="mat-flag"><?php echo $this->render_flag( $lang['flag'], $lang['name'] ?? '' ); ?></span>
                             <?php endif; ?>
                             <?php if ( $show_names ) : ?>
-                                <span class="mat-lang-name"><?php echo esc_html( $lang['native_name'] ); ?></span>
+                                <span class="mat-lang-name"><?php echo esc_html( $lang['native_name'] ?? $lang['name'] ); ?></span>
                             <?php endif; ?>
                             <?php if ( $lang['code'] === $this->current_lang ) : ?>
                                 <svg class="mat-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -215,10 +215,10 @@ class MAT_Language_Switcher {
                         <a href="<?php echo esc_url( $this->get_switch_url( $lang['code'] ) ); ?>" 
                            class="mat-lang-item <?php echo $lang['code'] === $this->current_lang ? 'mat-active' : ''; ?>">
                             <?php if ( $show_flags && ! empty( $lang['flag'] ) ) : ?>
-                                <span class="mat-flag"><?php echo esc_html( $lang['flag'] ); ?></span>
+                                <span class="mat-flag"><?php echo $this->render_flag( $lang['flag'], $lang['name'] ?? '' ); ?></span>
                             <?php endif; ?>
                             <?php if ( $show_names ) : ?>
-                                <span class="mat-lang-name"><?php echo esc_html( $lang['native_name'] ); ?></span>
+                                <span class="mat-lang-name"><?php echo esc_html( $lang['native_name'] ?? $lang['name'] ); ?></span>
                             <?php endif; ?>
                         </a>
                     </li>
@@ -239,8 +239,8 @@ class MAT_Language_Switcher {
                     <li>
                         <a href="<?php echo esc_url( $this->get_switch_url( $lang['code'] ) ); ?>" 
                            class="mat-flag-item <?php echo $lang['code'] === $this->current_lang ? 'mat-active' : ''; ?>"
-                           title="<?php echo esc_attr( $lang['native_name'] ); ?>">
-                            <span class="mat-flag"><?php echo esc_html( $lang['flag'] ); ?></span>
+                           title="<?php echo esc_attr( $lang['native_name'] ?? $lang['name'] ); ?>">
+                            <span class="mat-flag"><?php echo $this->render_flag( $lang['flag'], $lang['name'] ?? '' ); ?></span>
                         </a>
                     </li>
                 <?php endforeach; ?>
@@ -296,7 +296,7 @@ class MAT_Language_Switcher {
         <div class="mat-floating-widget mat-float-<?php echo esc_attr( $float_pos ); ?>">
             <button type="button" class="mat-floating-toggle" aria-expanded="false">
                 <?php if ( ! empty( $current['flag'] ) ) : ?>
-                    <span class="mat-flag"><?php echo esc_html( $current['flag'] ); ?></span>
+                    <span class="mat-flag"><?php echo $this->render_flag( $current['flag'], $current['name'] ?? '' ); ?></span>
                 <?php else : ?>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
@@ -318,11 +318,11 @@ class MAT_Language_Switcher {
                             <a href="<?php echo esc_url( $this->get_switch_url( $lang['code'] ) ); ?>" 
                                class="mat-floating-item <?php echo $lang['code'] === $this->current_lang ? 'mat-active' : ''; ?>">
                                 <?php if ( $show_flags && ! empty( $lang['flag'] ) ) : ?>
-                                    <span class="mat-flag"><?php echo esc_html( $lang['flag'] ); ?></span>
+                                    <span class="mat-flag"><?php echo $this->render_flag( $lang['flag'], $lang['name'] ?? '' ); ?></span>
                                 <?php endif; ?>
                                 <span class="mat-lang-info">
-                                    <span class="mat-lang-native"><?php echo esc_html( $lang['native_name'] ); ?></span>
-                                    <?php if ( $lang['name'] !== $lang['native_name'] ) : ?>
+                                    <span class="mat-lang-native"><?php echo esc_html( $lang['native_name'] ?? $lang['name'] ); ?></span>
+                                    <?php if ( isset( $lang['name'] ) && isset( $lang['native_name'] ) && $lang['name'] !== $lang['native_name'] ) : ?>
                                         <span class="mat-lang-english"><?php echo esc_html( $lang['name'] ); ?></span>
                                     <?php endif; ?>
                                 </span>
@@ -344,16 +344,22 @@ class MAT_Language_Switcher {
      * Get current language data
      */
     private function get_current_lang_data() {
-        foreach ( $this->languages as $lang ) {
-            if ( $lang['code'] === $this->current_lang ) {
-                return $lang;
+        if ( ! empty( $this->languages ) ) {
+            foreach ( $this->languages as $lang ) {
+                if ( isset( $lang['code'] ) && $lang['code'] === $this->current_lang ) {
+                    return $lang;
+                }
             }
+            // Return first language if current not found
+            return $this->languages[0];
         }
-        return ! empty( $this->languages ) ? $this->languages[0] : array(
+        
+        // Default fallback
+        return array(
             'code' => 'en',
             'name' => 'English',
             'native_name' => 'English',
-            'flag' => '🇬🇧',
+            'flag' => 'gb',
         );
     }
 
@@ -362,6 +368,11 @@ class MAT_Language_Switcher {
      */
     private function get_switch_url( $lang_code ) {
         global $mat_url_handler;
+        
+        // In admin, just return a placeholder URL
+        if ( is_admin() ) {
+            return '#' . $lang_code;
+        }
         
         $post_id = get_queried_object_id();
         
@@ -378,6 +389,23 @@ class MAT_Language_Switcher {
         }
         
         return home_url( '/' . $lang_code . '/' );
+    }
+
+    /**
+     * Render flag - handles both ISO codes and emoji
+     */
+    private function render_flag( $flag, $alt = '' ) {
+        if ( empty( $flag ) ) {
+            return '';
+        }
+        
+        // If it's a short ISO code (2-3 chars), render as image
+        if ( strlen( $flag ) <= 3 && preg_match( '/^[a-zA-Z]+$/', $flag ) ) {
+            return '<img src="https://flagcdn.com/w20/' . esc_attr( strtolower( $flag ) ) . '.png" alt="' . esc_attr( $alt ) . '" class="mat-flag-img" style="width:20px;height:15px;vertical-align:middle;">';
+        }
+        
+        // Otherwise treat as emoji
+        return esc_html( $flag );
     }
 
     /**
