@@ -71,12 +71,18 @@ class MAT_Admin_Settings {
     public function render_languages_section() {
         global $wpdb;
         $table_name = $wpdb->prefix . 'mat_languages';
+        
+        // Self-healing: Check if table exists
+        if ( class_exists( 'MAT_Database_Handler' ) ) {
+            MAT_Database_Handler::check_tables_exist();
+        }
+
         $languages = $wpdb->get_results( "SELECT * FROM $table_name ORDER BY display_order ASC" );
 
         echo '<table class="widefat fixed striped" style="margin-bottom: 20px;">';
         echo '<thead><tr><th>Code</th><th>Name</th><th>Active</th><th>Actions</th></tr></thead>';
         echo '<tbody>';
-        if ( $languages ) {
+        if ( ! empty( $languages ) ) {
             foreach ( $languages as $lang ) {
                 echo '<tr>';
                 echo '<td>' . esc_html( $lang->language_code ) . '</td>';

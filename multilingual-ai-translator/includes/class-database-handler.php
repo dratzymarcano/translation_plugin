@@ -7,6 +7,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 class MAT_Database_Handler {
 
 	public static function activate() {
+		self::create_tables();
+	}
+
+	public static function create_tables() {
 		global $wpdb;
 		$charset_collate = $wpdb->get_charset_collate();
 		$prefix = $wpdb->prefix;
@@ -95,5 +99,13 @@ class MAT_Database_Handler {
 			processed_at DATETIME
 		) $charset_collate;";
 		dbDelta( $sql_queue );
+	}
+
+	public static function check_tables_exist() {
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'mat_languages';
+		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) != $table_name ) {
+			self::create_tables();
+		}
 	}
 }

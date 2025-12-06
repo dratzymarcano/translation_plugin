@@ -52,6 +52,14 @@ class MAT_Plugin_Core {
 		if ( class_exists( 'MAT_Admin_Settings' ) ) {
 			new MAT_Admin_Settings();
 		}
+
+		add_filter( 'plugin_action_links_' . plugin_basename( dirname( dirname( __FILE__ ) ) . '/multilingual-ai-translator.php' ), array( $this, 'add_action_links' ) );
+	}
+
+	public function add_action_links( $links ) {
+		$settings_link = '<a href="admin.php?page=multilingual-ai-translator">' . __( 'Settings', 'multilingual-ai-translator' ) . '</a>';
+		array_unshift( $links, $settings_link );
+		return $links;
 	}
 
 	private function define_public_hooks() {
