@@ -166,6 +166,13 @@ class MAT_URL_Handler {
             $this->set_language_cookie( $lang );
         }
         
+        // If only language code (e.g., /en/) - show front page
+        if ( $lang && empty( $slug ) ) {
+            // This is the translated homepage - show front page
+            // WordPress will handle this automatically
+            return;
+        }
+        
         if ( $slug && $lang ) {
             // Try to find post by translated slug
             $translation = MAT_Database_Handler::get_post_by_translated_slug( $slug, $lang );
@@ -358,8 +365,19 @@ class MAT_URL_Handler {
      * Get URL for specific language
      */
     public function get_language_url( $lang_code, $post_id = null ) {
+        // Check if we're on the front page / homepage
+        $is_front = is_front_page() || is_home();
+        
         if ( ! $post_id ) {
             $post_id = get_queried_object_id();
+        }
+        
+        // For homepage, always return clean language URL
+        if ( $is_front ) {
+            if ( $lang_code === $this->default_lang ) {
+                return home_url( '/' );
+            }
+            return home_url( '/' . $lang_code . '/' );
         }
         
         if ( $lang_code === $this->default_lang ) {
