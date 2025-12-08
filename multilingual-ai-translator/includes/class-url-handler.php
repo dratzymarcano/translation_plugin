@@ -365,12 +365,17 @@ class MAT_URL_Handler {
      * Get URL for specific language
      */
     public function get_language_url( $lang_code, $post_id = null ) {
-        // Check if we're on the front page / homepage
-        $is_front = is_front_page() || is_home();
-        
         if ( ! $post_id ) {
             $post_id = get_queried_object_id();
         }
+
+        // Check if we're on the front page / homepage
+        // We also check if the current post ID matches the 'page_on_front' option
+        // This handles cases where is_front_page() might return false on rewritten URLs
+        $front_page_id = get_option( 'page_on_front' );
+        $is_front_page_id = ( $post_id && $front_page_id && (int)$post_id === (int)$front_page_id );
+        
+        $is_front = is_front_page() || is_home() || $is_front_page_id;
         
         // For homepage, always return clean language URL
         if ( $is_front ) {
@@ -402,6 +407,20 @@ class MAT_URL_Handler {
         $slug = ( $translation && ! empty( $translation['translated_slug'] ) )
             ? $translation['translated_slug']
             : $post->post_name;
+            
+        // Safety check: If the resulting slug is the same as the front page slug, remove it.
+        // This prevents /en/home-3/ when it should be /en/
+        $front_page_slug = '';
+        if ( $front_page_id ) {
+            $front_post = get_post( $front_page_id );
+            if ( $front_post ) {
+                $front_page_slug = $front_post->post_name;
+            }
+        }
+
+        if ( ! empty( $front_page_slug ) && $slug === $front_page_slug ) {
+             return home_url( '/' . $lang_code . '/' );
+        }
         
         return home_url( '/' . $lang_code . '/' . $slug . '/' );
     }
