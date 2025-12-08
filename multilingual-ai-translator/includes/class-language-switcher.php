@@ -358,14 +358,16 @@ class MAT_Language_Switcher {
      * Get current language data
      */
     private function get_current_lang_data() {
-        if ( ! empty( $this->languages ) ) {
+        if ( ! empty( $this->languages ) && is_array( $this->languages ) ) {
             foreach ( $this->languages as $lang ) {
                 if ( isset( $lang['code'] ) && $lang['code'] === $this->current_lang ) {
                     return $lang;
                 }
             }
             // Return first language if current not found
-            return $this->languages[0];
+            if ( isset( $this->languages[0] ) ) {
+                return $this->languages[0];
+            }
         }
         
         // Default fallback

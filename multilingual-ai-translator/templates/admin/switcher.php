@@ -39,6 +39,9 @@ if ( class_exists( 'MAT_Database_Handler' ) ) {
 if ( ! is_array( $active_languages ) ) {
     $active_languages = array();
 }
+
+// --- DEBUG / SAFETY WRAPPER ---
+try {
 ?>
 <div class="mat-admin-wrap">
 	<div class="mat-admin-header">
@@ -174,6 +177,8 @@ if ( ! is_array( $active_languages ) ) {
 										echo do_shortcode( '[mat_language_switcher style="dropdown"]' ); 
 									} catch ( Exception $e ) {
 										echo '<p class="mat-preview-error">' . esc_html__( 'Preview unavailable', 'multilingual-ai-translator' ) . '</p>';
+									} catch ( Error $e ) {
+										echo '<p class="mat-preview-error">' . esc_html__( 'Preview unavailable (Fatal)', 'multilingual-ai-translator' ) . '</p>';
 									}
 									?>
 								</div>
@@ -185,6 +190,8 @@ if ( ! is_array( $active_languages ) ) {
 										echo do_shortcode( '[mat_language_switcher style="inline"]' ); 
 									} catch ( Exception $e ) {
 										echo '<p class="mat-preview-error">' . esc_html__( 'Preview unavailable', 'multilingual-ai-translator' ) . '</p>';
+									} catch ( Error $e ) {
+										echo '<p class="mat-preview-error">' . esc_html__( 'Preview unavailable (Fatal)', 'multilingual-ai-translator' ) . '</p>';
 									}
 									?>
 								</div>
@@ -196,6 +203,8 @@ if ( ! is_array( $active_languages ) ) {
 										echo do_shortcode( '[mat_language_switcher style="flags-only"]' ); 
 									} catch ( Exception $e ) {
 										echo '<p class="mat-preview-error">' . esc_html__( 'Preview unavailable', 'multilingual-ai-translator' ) . '</p>';
+									} catch ( Error $e ) {
+										echo '<p class="mat-preview-error">' . esc_html__( 'Preview unavailable (Fatal)', 'multilingual-ai-translator' ) . '</p>';
 									}
 									?>
 								</div>
@@ -244,6 +253,13 @@ if ( ! is_array( $active_languages ) ) {
 		</form>
 	</div>
 </div>
+<?php
+} catch ( Throwable $e ) {
+    echo '<div class="notice notice-error"><p>' . esc_html( 'Critical Error in Switcher Template: ' . $e->getMessage() ) . '</p></div>';
+} catch ( Exception $e ) {
+    echo '<div class="notice notice-error"><p>' . esc_html( 'Exception in Switcher Template: ' . $e->getMessage() ) . '</p></div>';
+}
+?>
 
 <style>
 .mat-switcher-page { max-width: 1000px; }
