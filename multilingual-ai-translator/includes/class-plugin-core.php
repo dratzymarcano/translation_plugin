@@ -54,6 +54,12 @@ class MAT_Plugin_Core {
         $this->init_admin();
         $this->init_public();
         $this->register_hooks();
+        
+        // v3.0.0: Auto-flush rewrite rules on update
+        if ( get_option( 'mat_version' ) !== $this->version ) {
+            update_option( 'mat_version', $this->version );
+            flush_rewrite_rules();
+        }
     }
 
     /**

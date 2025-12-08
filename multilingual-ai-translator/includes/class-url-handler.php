@@ -126,12 +126,10 @@ class MAT_URL_Handler {
         foreach ( $this->languages as $lang ) {
             $code = $lang['code'];
             
-            // Skip default language - it uses standard URLs
-            if ( $code === $this->default_lang ) {
-                continue;
-            }
+            // v3.0.0: Add rules for ALL languages including default
+            // This prevents 404s if someone visits /en/ manually
             
-            // Language homepage: /de/
+            // Language homepage: /de/ or /en/
             add_rewrite_rule(
                 '^' . $code . '/?$',
                 'index.php?mat_lang=' . $code,
@@ -274,6 +272,27 @@ class MAT_URL_Handler {
     public function handle_redirects() {
         // Store language in cookie
         $this->set_language_cookie( $this->current_lang );
+
+        // v3.0.0: Canonical Redirect for Default Language
+        // If we are on default language (e.g. 'en') but URL has /en/, redirect to /
+        if ( $this->current_lang === $this->default_lang && ! is_admin() ) {
+            $request_uri = isset( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '';
+            
+            // Check if URL starts with /en/
+            if ( preg_match( '#^/' . preg_quote( $this->default_lang, '#' ) . '(/|$)#', $request_uri ) ) {
+                
+                // Remove /en/ from the start
+                $new_uri = preg_replace( '#^/' . preg_quote( $this->default_lang, '#' ) . '/?#', '/', $request_uri );
+                
+                // Ensure we don't end up with double slashes or empty string
+                if ( empty( $new_uri ) ) {
+                    $new_uri = '/';
+                }
+                
+                wp_redirect( home_url( $new_uri ), 301 );
+                exit;
+            }
+        }
     }
 
     /**

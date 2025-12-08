@@ -145,7 +145,10 @@ class MAT_Admin_Menu {
 		$default_lang    = MAT_Database_Handler::get_default_language();
 		$api_settings    = get_option( 'mat_api_settings', array() );
 		$api_key_set     = ! empty( $api_settings['api_key'] ) || ! empty( get_option( 'mat_openrouter_api_key' ) );
-		$switcher_active = get_option( 'mat_switcher_position', 'none' ) !== 'none';
+		
+		// v3.0.0: Check new settings array
+		$switcher_settings = get_option( 'mat_switcher_settings', array() );
+		$switcher_active   = isset( $switcher_settings['position'] ) && $switcher_settings['position'] !== 'none';
 
 		include MAT_PLUGIN_DIR . 'templates/admin/dashboard.php';
 	}
