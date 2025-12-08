@@ -292,10 +292,12 @@ class MAT_Database_Handler {
     public static function get_active_languages() {
         global $wpdb;
         $table_name = $wpdb->prefix . 'mat_languages';
-        return $wpdb->get_results( 
+        $results = $wpdb->get_results( 
             "SELECT * FROM $table_name WHERE is_active = 1 ORDER BY sort_order ASC",
             ARRAY_A
         );
+        
+        return is_array( $results ) ? $results : array();
     }
 
     /**
@@ -304,7 +306,8 @@ class MAT_Database_Handler {
     public static function get_all_languages() {
         global $wpdb;
         $table_name = $wpdb->prefix . 'mat_languages';
-        return $wpdb->get_results( "SELECT * FROM $table_name ORDER BY sort_order ASC", ARRAY_A );
+        $results = $wpdb->get_results( "SELECT * FROM $table_name ORDER BY sort_order ASC", ARRAY_A );
+        return is_array( $results ) ? $results : array();
     }
 
     /**

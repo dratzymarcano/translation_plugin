@@ -34,6 +34,11 @@ if ( class_exists( 'MAT_Database_Handler' ) ) {
 } else {
     $active_languages = array();
 }
+
+// Ensure active_languages is an array
+if ( ! is_array( $active_languages ) ) {
+    $active_languages = array();
+}
 ?>
 <div class="mat-admin-wrap">
 	<div class="mat-admin-header">

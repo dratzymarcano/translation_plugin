@@ -129,7 +129,7 @@ class MAT_Language_Switcher {
      * Render switcher HTML
      */
     public function render_switcher( $style = 'dropdown', $show_flags = true, $show_names = true, $extra_class = '' ) {
-        if ( empty( $this->languages ) ) {
+        if ( empty( $this->languages ) || ! is_array( $this->languages ) ) {
             return '';
         }
 
