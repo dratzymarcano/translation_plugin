@@ -1,6 +1,6 @@
 # MultiLingual AI Translator Pro
 
-**Version:** 2.02  
+**Version:** 2.08  
 **Requires WordPress:** 6.0+  
 **Requires PHP:** 7.4+  
 **License:** GPL-2.0+
