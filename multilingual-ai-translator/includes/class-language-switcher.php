@@ -140,17 +140,31 @@ class MAT_Language_Switcher {
 
         ob_start();
 
-        switch ( $style ) {
-            case 'inline':
-                $this->render_inline( $classes, $show_flags, $show_names );
-                break;
-            case 'flags':
-            case 'flags-only':
-                $this->render_flags_only( $classes );
-                break;
-            default:
-                $this->render_dropdown( $classes, $show_flags, $show_names );
-                break;
+        try {
+            switch ( $style ) {
+                case 'inline':
+                    $this->render_inline( $classes, $show_flags, $show_names );
+                    break;
+                case 'flags':
+                case 'flags-only':
+                    $this->render_flags_only( $classes );
+                    break;
+                default:
+                    $this->render_dropdown( $classes, $show_flags, $show_names );
+                    break;
+            }
+        } catch ( Exception $e ) {
+            ob_end_clean();
+            if ( is_admin() ) {
+                return '<div class="error"><p>' . esc_html( 'Error rendering switcher: ' . $e->getMessage() ) . '</p></div>';
+            }
+            return '';
+        } catch ( Error $e ) {
+            ob_end_clean();
+            if ( is_admin() ) {
+                return '<div class="error"><p>' . esc_html( 'Fatal error rendering switcher: ' . $e->getMessage() ) . '</p></div>';
+            }
+            return '';
         }
 
         return ob_get_clean();

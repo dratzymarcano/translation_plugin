@@ -29,7 +29,11 @@ $switcher_show_names = isset( $settings['show_names'] ) ? $settings['show_names'
 $switcher_position   = isset( $settings['position'] ) ? $settings['position'] : 'floating';
 
 // Get active languages - ensure it's available
-$active_languages = MAT_Database_Handler::get_active_languages();
+if ( class_exists( 'MAT_Database_Handler' ) ) {
+    $active_languages = MAT_Database_Handler::get_active_languages();
+} else {
+    $active_languages = array();
+}
 ?>
 <div class="mat-admin-wrap">
 	<div class="mat-admin-header">
