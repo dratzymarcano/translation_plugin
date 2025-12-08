@@ -88,10 +88,10 @@ class MAT_Admin_Menu {
 		}
 
 		wp_enqueue_style(
-			'mat-admin-css',
-			MAT_PLUGIN_URL . 'admin/css/admin-style.css',
+			'mat-admin-v3-css',
+			MAT_PLUGIN_URL . 'assets/css/admin-v3.css',
 			array(),
-			$this->version
+			'3.0.0'
 		);
 
 		wp_enqueue_script( 'jquery-ui-sortable' );
