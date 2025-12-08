@@ -262,13 +262,17 @@ Output the translated JSON only:";
         $translated = json_decode( $response, true );
         
         if ( json_last_error() !== JSON_ERROR_NONE ) {
-            // Try to extract JSON from response
-            if ( preg_match( '/\{[^}]+\}/s', $response, $matches ) ) {
+            // Try to extract JSON from response (handle markdown code blocks)
+            if ( preg_match( '/```(?:json)?\s*(\{.*?\})\s*```/s', $response, $matches ) ) {
+                $translated = json_decode( $matches[1], true );
+            } elseif ( preg_match( '/\{.*\}/s', $response, $matches ) ) {
                 $translated = json_decode( $matches[0], true );
             }
         }
 
         if ( ! is_array( $translated ) ) {
+            // Log the raw response for debugging
+            error_log( 'MAT SEO Translation Parse Error. Raw response: ' . $response );
             return new WP_Error( 'parse_error', __( 'Failed to parse translated SEO content.', 'multilingual-ai-translator' ) );
         }
 
@@ -387,11 +391,42 @@ Output the translated JSON only:";
             'X-Title'       => get_bloginfo( 'name' ) . ' - MultiLingual AI Translator',
         );
 
-        $response = wp_remote_post( $this->api_endpoint, array(
-            'headers' => $headers,
-            'body'    => wp_json_encode( $body ),
-            'timeout' => 120,
-        ) );
+        // Retry logic for transient errors
+        $max_retries = 2;
+        $attempt = 0;
+        $response = null;
+
+        while ( $attempt <= $max_retries ) {
+            $response = wp_remote_post( $this->api_endpoint, array(
+                'headers' => $headers,
+                'body'    => wp_json_encode( $body ),
+                'timeout' => 120,
+            ) );
+
+            if ( is_wp_error( $response ) ) {
+                // Network error, retry immediately
+                $attempt++;
+                continue;
+            }
+
+            $response_code = wp_remote_retrieve_response_code( $response );
+            
+            // If success or client error (4xx), don't retry
+            if ( $response_code === 200 || ( $response_code >= 400 && $response_code < 500 && $response_code !== 429 ) ) {
+                break;
+            }
+
+            // If rate limit (429) or server error (5xx), wait and retry
+            if ( $response_code === 429 || $response_code >= 500 ) {
+                $attempt++;
+                if ( $attempt <= $max_retries ) {
+                    sleep( 1 * $attempt ); // Exponential backoff: 1s, 2s
+                    continue;
+                }
+            }
+            
+            break;
+        }
 
         if ( is_wp_error( $response ) ) {
             return $response;
@@ -423,6 +458,15 @@ Output the translated JSON only:";
      * @return string
      */
     private function get_language_name( $code ) {
+        // Try to get from database first
+        if ( class_exists( 'MAT_Database_Handler' ) ) {
+            $lang = MAT_Database_Handler::get_language( $code );
+            if ( $lang && ! empty( $lang['name'] ) ) {
+                return $lang['name'];
+            }
+        }
+
+        // Fallback list
         $languages = array(
             'en' => 'English',
             'de' => 'German',

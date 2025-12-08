@@ -20,12 +20,16 @@ class MAT_Translation_Editor {
     /**
      * Post types to translate
      */
-    private $post_types = array( 'post', 'page', 'product' );
+    private $post_types;
 
     /**
      * Constructor
      */
     public function __construct() {
+        // Initialize post types
+        $this->post_types = array( 'post', 'page', 'product' );
+        
+        add_action( 'init', array( $this, 'init_post_types' ) );
         add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
         add_action( 'save_post', array( $this, 'save_translations' ), 10, 2 );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
@@ -33,6 +37,24 @@ class MAT_Translation_Editor {
         // AJAX handlers
         add_action( 'wp_ajax_mat_translate_content', array( $this, 'ajax_translate_content' ) );
         add_action( 'wp_ajax_mat_translate_all', array( $this, 'ajax_translate_all' ) );
+    }
+
+    /**
+     * Initialize supported post types
+     */
+    public function init_post_types() {
+        // Get all public post types
+        $args = array(
+            'public' => true,
+            '_builtin' => false
+        );
+        $custom_types = get_post_types( $args, 'names' );
+        
+        // Merge with defaults
+        $this->post_types = array_merge( array( 'post', 'page' ), $custom_types );
+        
+        // Allow filtering
+        $this->post_types = apply_filters( 'mat_translatable_post_types', $this->post_types );
     }
 
     /**
