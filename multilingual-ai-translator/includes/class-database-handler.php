@@ -186,10 +186,20 @@ class MAT_Database_Handler {
         $missing_columns = array_diff( $required_columns, $column_names );
         
         if ( ! empty( $missing_columns ) ) {
-            // Table structure is wrong, recreate it
-            $wpdb->query( "DROP TABLE IF EXISTS $table_name" );
+            // Try to update table structure first using dbDelta
             self::create_tables();
-            self::seed_default_language();
+            
+            // Check again
+            $columns = $wpdb->get_results( "SHOW COLUMNS FROM $table_name" );
+            $column_names = array_map( function( $col ) { return $col->Field; }, $columns );
+            $missing_columns = array_diff( $required_columns, $column_names );
+            
+            if ( ! empty( $missing_columns ) ) {
+                // Still missing? Then drop and recreate (destructive but necessary)
+                $wpdb->query( "DROP TABLE IF EXISTS $table_name" );
+                self::create_tables();
+                self::seed_default_language();
+            }
             return;
         }
         

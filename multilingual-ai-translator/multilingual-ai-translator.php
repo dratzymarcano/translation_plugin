@@ -3,7 +3,7 @@
  * Plugin Name: MultiLingual AI Translator Pro
  * Plugin URI:  https://example.com/multilingual-ai-translator-pro
  * Description: Professional AI-powered translations via OpenRouter API. TranslatePress/Polylang-style workflow with SEO-friendly URLs, editable translations, and per-language SEO metadata.
- * Version:     2.05
+ * Version:     2.07
  * Author:      Your Name
  * Author URI:  https://example.com
  * Text Domain: multilingual-ai-translator

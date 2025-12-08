@@ -92,7 +92,6 @@ class MAT_Plugin_Core {
         // Database handler - ensure tables exist
         if ( class_exists( 'MAT_Database_Handler' ) ) {
             MAT_Database_Handler::check_tables_exist();
-            $this->database = new MAT_Database_Handler();
         }
         
         // OpenRouter API

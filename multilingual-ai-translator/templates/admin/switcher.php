@@ -210,7 +210,7 @@ $active_languages = MAT_Database_Handler::get_active_languages();
 									$is_default = isset( $lang['is_default'] ) ? $lang['is_default'] : 0;
 								?>
 									<div class="mat-mini-lang <?php echo $is_default ? 'mat-default' : ''; ?>">
-										<?php if ( $flag && strlen( $flag ) <= 5 ) : ?>
+										<?php if ( $flag && strlen( $flag ) <= 3 && preg_match( '/^[a-zA-Z]+$/', $flag ) ) : ?>
 											<img src="https://flagcdn.com/w20/<?php echo esc_attr( strtolower( $flag ) ); ?>.png" alt="" onerror="this.style.display='none'">
 										<?php else : ?>
 											<span class="mat-mini-emoji"><?php echo esc_html( $flag ); ?></span>
